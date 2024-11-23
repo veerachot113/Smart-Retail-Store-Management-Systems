@@ -1,13 +1,19 @@
 import API from "./api";
 
-// ดึงรายการผู้ใช้
-export const getUsers = async () => {
-  const response = await API.get("/users/get-users.php");
+
+// ฟังก์ชัน Login
+export const login = async ({ email, password }) => {
+  const response = await API.post("/users/login.php", { email, password });
   return response.data;
 };
 
-// เพิ่มผู้ใช้ใหม่
-export const addUser = async (userData) => {
-  const response = await API.post("/users/add-user.php", userData);
-  return response.data;
+// ฟังก์ชันสำหรับเพิ่ม Token ใน Headers
+export const setAuthToken = (token) => {
+  if (token) {
+    API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete API.defaults.headers.common["Authorization"];
+  }
 };
+
+
