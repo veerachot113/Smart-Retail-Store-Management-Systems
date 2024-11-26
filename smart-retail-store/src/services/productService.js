@@ -21,10 +21,10 @@ export const addProduct = async (formData) => {
   return response.data;
 };
 
-export const deleteProduct = async (productId) => {
-    const response = await API.post("/products/delete-product.php", { id: productId });
-    return response.data;
-  };
+export const deleteProduct = async (id) => {
+  const response = await API.delete(`/products/delete-product.php?id=${id}`);
+  return response.data;
+};
 
 export const getCategories = async () => {
   const response = await API.get("/categories/get-categories.php");
@@ -32,12 +32,17 @@ export const getCategories = async () => {
 };
 
 
-export const updateProduct = async (id, product) => {
-  const response = await API.put(`/products/update-product.php?id=${id}`, product);
-  if (response.data.status === "success") {
-    return response.data.message; // ส่งข้อความสำเร็จกลับไป
-  } else {
-    throw new Error(response.data.message); // ขว้าง Error เมื่อเกิดปัญหา
+export const updateProduct = async (id, formData) => {
+  try {
+    const response = await API.post(`/products/update-product.php`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error.response || error.message);
+    throw error;
   }
 };
 

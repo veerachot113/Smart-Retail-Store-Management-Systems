@@ -1,37 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { getProducts, getProductById, deleteProduct } from "../../services/productService";
-import AddProductModal from "../../components/AddProductModal";
+import { getProducts, deleteProduct } from "../../services/productService";
+import { Link } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null); // เก็บข้อมูลสินค้าที่กำลังแก้ไข
   const [error, setError] = useState("");
 
-  const fetchProducts = async () => {
-    try {
-      const data = await getProducts();
-      setProducts(data);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-      setError("Failed to fetch products. Please try again.");
-    }
-  };
-
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProducts();
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          setError("Invalid data format from API.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setError("Failed to fetch products. Please try again.");
+      }
+    };
     fetchProducts();
   }, []);
-
-  const handleEdit = async (id) => {
-    try {
-      const product = await getProductById(id); // ดึงข้อมูลสินค้า
-      setEditingProduct(product); // ตั้งค่าข้อมูลสินค้าใน state
-      setIsModalOpen(true); // เปิดป็อปอัพ
-    } catch (error) {
-      console.error("Failed to fetch product:", error);
-      setError("Failed to fetch product for editing.");
-    }
-  };
 
   const handleDelete = async (id) => {
     try {
@@ -43,75 +33,63 @@ const ProductList = () => {
     }
   };
 
-  const handleProductSaved = () => {
-    setEditingProduct(null); // รีเซ็ตข้อมูลสินค้าใน state
-    fetchProducts(); // รีเฟรชรายการสินค้า
-  };
-
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Product Management</h1>
       <div className="mb-4 flex justify-end">
-        <button
-          onClick={() => {
-            setEditingProduct(null); // เคลียร์ข้อมูลสินค้าใน state
-            setIsModalOpen(true); // เปิดป็อปอัพ
-          }}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Add Product
-        </button>
+        <Link to="/products/add">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+            Add Product
+          </button>
+        </Link>
       </div>
-
-      <AddProductModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onProductSaved={handleProductSaved}
-        editingProduct={editingProduct} // ส่งข้อมูลสินค้าไปยัง Modal
-      />
-
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <table className="min-w-full bg-white border border-gray-300 rounded-md">
         <thead>
           <tr className="bg-gray-100">
-            <th className="px-4 py-2 text-left">Image</th>
-            <th className="px-4 py-2 text-left">Name</th>
-            <th className="px-4 py-2 text-left">Category</th>
-            <th className="px-4 py-2 text-left">Price</th>
-            <th className="px-4 py-2 text-left">Actions</th>
+            <th className="border-b border-gray-300 px-4 py-2 text-left">Image</th>
+            <th className="border-b border-gray-300 px-4 py-2 text-left">Name</th>
+            <th className="border-b border-gray-300 px-4 py-2 text-left">Price</th>
+            <th className="border-b border-gray-300 px-4 py-2 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td className="px-4 py-2">
-                {product.image && (
-                  <img
-                    src={`http://localhost/Smart-Retail-Store-Management-Systems/php-api/${product.image}`}
-                    alt={product.name}
-                    className="w-16 h-16 object-cover rounded"
-                  />
-                )}
-              </td>
-              <td className="px-4 py-2">{product.name}</td>
-              <td className="px-4 py-2">{product.category_name}</td>
-              <td className="px-4 py-2">${product.price}</td>
-              <td className="px-4 py-2">
-                <button
-                  onClick={() => handleEdit(product.id)}
-                  className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 ml-2"
-                >
-                  Delete
-                </button>
-              </td>
+          {products.length > 0 ? (
+            products.map((product) => (
+              <tr key={product.id} className="hover:bg-gray-100">
+                <td className="border-b border-gray-300 px-4 py-2">
+                  {product.image ? (
+                    <img
+                      src={`http://localhost/Smart-Retail-Store-Management-Systems/php-api/${product.image}`}
+                      alt={product.name}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  ) : (
+                    <span>No Image</span>
+                  )}
+                </td>
+                <td className="border-b border-gray-300 px-4 py-2">{product.name}</td>
+                <td className="border-b border-gray-300 px-4 py-2">${product.price}</td>
+                <td className="border-b border-gray-300 px-4 py-2">
+                  <Link to={`/products/edit/${product.id}`}>
+                    <button className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition mr-2">
+                      Edit
+                    </button>
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(product.id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4" className="text-center py-4">No products found</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

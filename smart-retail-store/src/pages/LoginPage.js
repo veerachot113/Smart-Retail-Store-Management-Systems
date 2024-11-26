@@ -21,79 +21,130 @@ const LoginPage = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-gray-100"
-      style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1830&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')", // URL ของภาพพื้นหลัง
-      }}
-    >
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6">
-          SMART <span className="bg-[#f84525] text-white px-2 rounded-md">RETAIL STORE</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+          Welcome to <span className="text-red-500">Smart Retail POS</span>
         </h1>
 
-        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+        {error && <p className="text-red-600 text-center mb-4">{error}</p>}
 
         <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label className="block font-medium text-sm text-gray-700" htmlFor="email">
-              Email
+          {/* Email Field */}
+          <div className="mb-5">
+            <label
+              className="block text-sm font-medium text-gray-700 mb-2"
+              htmlFor="email"
+            >
+              Email Address
             </label>
             <input
               type="email"
-              name="email"
-              placeholder="Email"
+              id="email"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md py-2.5 px-4 border text-sm outline-[#f84525]"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block font-medium text-sm text-gray-700" htmlFor="password">
+          {/* Password Field */}
+          <div className="mb-5">
+            <label
+              className="block text-sm font-medium text-gray-700 mb-2"
+              htmlFor="password"
+            >
               Password
             </label>
             <div className="relative">
               <input
-                id="password"
                 type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Password"
+                id="password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-md py-2.5 px-4 border text-sm outline-[#f84525]"
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 focus:outline-none"
+                aria-label="Toggle Password Visibility"
               >
                 {showPassword ? (
-                  <i className="bx bx-hide text-lg"></i>
+                  // Eye Icon
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 12c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.458 12C3.732 7.943 7.522 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S3.732 16.057 2.458 12z"
+                    />
+                  </svg>
                 ) : (
-                  <i className="bx bx-show text-lg"></i>
+                  // Eye-slash Icon
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.98 8.59c2.13-3.47 6.12-5.63 10.02-5.09 3.89.54 7.2 3.33 8.6 7.02-1.4 3.69-4.71 6.48-8.6 7.02-3.9.54-7.89-1.62-10.02-5.09M10.75 15.46l2.5-3.57"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2 2l20 20"
+                    />
+                  </svg>
                 )}
               </button>
             </div>
           </div>
 
-          <div className="mt-4 flex items-center">
+          {/* Remember Me and Forgot Password */}
+          <div className="flex items-center justify-between mb-6">
             <label className="flex items-center">
-              <input type="checkbox" className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" />
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-red-500 focus:ring-red-500"
+              />
               <span className="ml-2 text-sm text-gray-600">Remember Me</span>
             </label>
-          </div>
-
-          <div className="mt-6">
             <button
-              type="submit"
-              className="w-full px-4 py-2 bg-[#f84525] text-white rounded-md hover:bg-red-800 transition"
+              type="button"
+              onClick={() => console.log("Forgot Password clicked")}
+              className="text-sm text-red-500 hover:underline focus:outline-none"
             >
-              Sign In
+              Forgot Password?
             </button>
           </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition duration-200"
+          >
+            Sign In
+          </button>
         </form>
       </div>
     </div>
